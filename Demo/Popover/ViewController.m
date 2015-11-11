@@ -81,6 +81,32 @@
     }];
 }
 
+
+- (IBAction)showPopoverWithBarButton:(UIBarButtonItem *)sender {
+    UIView *targetView = [sender valueForKey:@"view"];
+    
+    ARSPopover *popoverController = [ARSPopover new];
+    popoverController.sourceView = self.navigationController.view;
+    popoverController.sourceRect = [targetView convertRect:targetView.bounds toView:nil];
+    popoverController.contentSize = CGSizeMake(400, 600);
+    popoverController.arrowDirection = UIPopoverArrowDirectionUp;
+    
+    [self presentViewController:popoverController animated:YES completion:^{
+        [popoverController insertContentIntoPopover:^(ARSPopover *popover, CGSize popoverPresentedSize, CGFloat popoverArrowHeight) {
+            CGFloat originX = 0;
+            CGFloat originY = 0;
+            CGFloat width = popoverPresentedSize.width;
+            CGFloat height = popoverPresentedSize.height - popoverArrowHeight;
+            
+            CGRect frame = CGRectMake(originX, originY, width, height);
+            UIWebView *webView = [[UIWebView alloc] initWithFrame:frame];
+            webView.scalesPageToFit = YES;
+            [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://www.google.com/ncr"]]];
+            [popover.view addSubview:webView];
+        }];
+    }];
+}
+
 #pragma mark <ARSPopoverDelegate>
 
 - (void)popoverPresentationController:(UIPopoverPresentationController *)popoverPresentationController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout UIView *__autoreleasing *)view {
